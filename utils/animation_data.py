@@ -122,7 +122,7 @@ def foot_contact_from_positions(positions, fid_l=(3, 4), fid_r=(7, 8)):
     for fid_index in [fid_l, fid_r]:
         foot_vel = (positions[1:, fid_index] - positions[:-1, fid_index]) ** 2  # [T - 1, 2, 3]
         foot_vel = np.sum(foot_vel, axis=-1)  # [T - 1, 2]
-        foot_contact = (foot_vel < velfactor).astype(np.float)
+        foot_contact = (foot_vel < velfactor).astype(float)
         feet_contact.append(foot_contact)
     feet_contact = np.concatenate(feet_contact, axis=-1)  # [T - 1, 4]
     feet_contact = np.concatenate((feet_contact[0:1].copy(), feet_contact), axis=0)
@@ -139,7 +139,7 @@ def phase_from_ft(foot_contact, is_debug=False):
     num_circles = 0
     circle_length = 0
     total_length = len(foot_contact)
-    ft = foot_contact[:, [0, 2]].astype(np.int)
+    ft = foot_contact[:, [0, 2]].astype(int)
     ft_start = np.zeros((total_length, 2))
     phases = np.zeros((total_length, 1))
 
@@ -408,7 +408,7 @@ def test_all(args):
         return np.sum((a - b) ** 2)
 
     def test_phase_from_ft():
-        pace = np.zeros((100, 1), dtype=np.int)
+        pace = np.zeros((100, 1), dtype=int)
         pace[::8] = 1
         left = pace[:-4]
         right = pace[4:]

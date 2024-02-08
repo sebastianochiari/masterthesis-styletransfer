@@ -10,14 +10,15 @@ sys.path.insert(0, BASEPATH)
 
 class Config:
 
+    # BOOL THAT HANDLE A TRY RUN
     for_try = False  # set to True only if you want to quickly check if all parts (latent space visualization, result output, etc.) function correctly 
 
     # Save & Visualization
-    name = 'pretrained'     # name of the experiment, for training from scratch please use a different name
+    name = 'training'     # name of the experiment, for training from scratch please use a different name
 
     cuda_id = 0
 
-    # hyyyper params
+    # hyper params
 
     use_rotloss = True
     use_newdecoder = True

@@ -6,6 +6,11 @@ sys.path.insert(0, BASEPATH)
 import argparse
 import importlib
 
+import matplotlib
+if os.environ.get('DISPLAY', '') == '':
+    print('No display found. Using non-interactive Agg backend')
+    matplotlib.use('Agg')
+
 from tensorboardX import SummaryWriter
 from data_loader import get_dataloader
 from itertools import cycle
@@ -161,6 +166,7 @@ def main(args):
         if iterations >= max_iter:
             print("Finish Training")
             sys.exit(0)
+
 
 if __name__ == '__main__':
     args = parse_args()
