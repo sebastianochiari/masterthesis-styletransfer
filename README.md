@@ -1,16 +1,13 @@
-# Deep-motion-editing
+# Motion Style Transfer
 
 ![Python](https://img.shields.io/badge/Python->=3.7-Blue?logo=python)  ![Pytorch](https://img.shields.io/badge/PyTorch->=1.5.0-Red?logo=pytorch)
 ![Blender](https://img.shields.io/badge/Blender-%3E=2.8-Orange?logo=blender)
 
+> ⚠️ DISCLAIMER  
+> This is a forked repository used during the research for my master thesis.  
+> The repository might be heavily modified. Please, refer to the original one for the original implementation.
+
 This library provides fundamental and advanced functions to work with 3D character animation in deep learning with Pytorch. The code contains end-to-end modules, from reading and editing animation files to visualizing and rendering (using Blender) them.
-
-The main deep editing operations provided here, motion retargeting and motion style transfer, are based on two works published in SIGGRAPH 2020:
-
-**Skeleton-Aware Networks for Deep Motion Retargeting**: [Project](https://deepmotionediting.github.io/retargeting) | [Paper](https://arxiv.org/abs/2005.05732) |
-[Video](https://www.youtube.com/watch?v=ym8Tnmiz5N8)
-
-<img src="images/retargeting_teaser.gif" align="center"> <br>
 
 **Unpaired Motion Style Transfer from Video to Animation**: [Project](https://deepmotionediting.github.io/style_transfer) | [Paper](https://arxiv.org/abs/2005.05751) |
 [Video](https://www.youtube.com/watch?v=m04zuBSdGrc)
@@ -20,77 +17,14 @@ The main deep editing operations provided here, motion retargeting and motion st
 
 This library is written and maintained by [Kfir Aberman](https://kfiraberman.github.io), [Peizhuo Li](https://peizhuoli.github.io/) and [Yijia Weng](https://halfsummer11.github.io/). The library is still under development.
 
-## Prerequisites
+## Requirements
 
-- Linux or macOS
-- Python 3
-- CPU or NVIDIA GPU + CUDA CuDNN
+**TBD**
 
 ## Quick Start
+
 We provide pretrained models together with demo examples using animation files specified in bvh format.
 
-<!--```bash
-python test.py -model_path MODEL_PATH -input_A PATH_A -input_B PATH_B -edit_type TYPE
-```-->
-
-### Motion Retargeting
-<!-- `TYPE = retargeting`  
-`PATH_A` - motion input  
-`PATH_B` - skeleton input -->
-
-Download and extract the test dataset from [Google Drive](https://docs.google.com/uc?export=download&id=1_849LvuT3WBEHktBT97P2oMBzeJz7-UP) or [Baidu Disk](https://pan.baidu.com/s/1z1cQiqLUgjfxlWoajIPr0g) (ye1q). Then place the `Mixamo` directory within `retargeting/datasets`.
-
-To generate the demo examples with the pretrained model, run
-
-```bash
-cd retargeting
-sh demo.sh
-```
-
-The results will be saved in `retargeting/examples`.
-
-To reconstruct the quantitative result with the pretrained model, run
-
-```bash
-cd retargeting
-python test.py
-```
-
-The retargeted demo results, that consists both intra-structual retargeting and cross-structural retargeting, will be saved in `retargeting/pretrained/results`.
-
-<!-- The system support both in Intra-Structural retargeting:
-```bash
-python test.py -model_path retargeting/models/pretrained_retargeting.pth -input_A retargeting/examples/IS_motion_input -input_B retargeting/examples/IS_skeleton_input -edit_type retargeting
-```
-(demo result GIF: input_motion, input_skeleton, output)
-
-and Cross-structural retargeting:
-```bash
-python test.py -model_path retargeting/models/pretrained_retargeting.pth -input_A retargeting/examples/CS_motion_input -input_B retargeting/examples/CS_skeleton_input -edit_type retargeting
-```
-
-(demo result GIF: input_motion, input_skeleton, output) -->
-
-### Motion Style Transfer
-
-<!-- `TYPE = style_transfer`  
-`PATH_A` - content motion input  
-`PATH_B` - style motion input  
-
-The system support both in style from 3D MoCap data:
-
-```bash
-python test.py -model_path retargeting/models/pretrained_style_transfer.pth -input_A style_transfer/examples/content_input -input_B style_transfer/examples/3D_style_input -edit_type style_transfer
-```
-
-(demo result GIF: input_content, input_style, output)
-
-and in style from 2D key-points (extracted from video):
-
-```bash
-python test.py -model_path retargeting/models/pretrained_style_transfer.pth -input_A style_transfer/examples/content_input -input_B style_transfer/examples/2D_style_input -edit_type style_transfer
-```
-(demo result GIF: input_content, input_style_video, output) -->
 To receive the demo examples, simply run
 ```bash
 sh style_transfer/demo.sh
@@ -99,42 +33,9 @@ The results will be saved in `style_transfer/demo_results`,
 where each folder contains the raw output `raw.bvh` and the output after footskate clean-up `fixed.bvh`.
 
 ## Train from scratch
-We provide instructions for retraining our models
+We provide instructions for retraining our models.
 
-### Motion Retargeting
-
-#### Dataset
-
-We use Mixamo dataset to train our model. You can download our preprocessed data from [Google Drive](https://drive.google.com/file/d/1BYH2t5XMGWwnu5coftehU0rTXupQvFLg/view?usp=sharing) or [Baidu Disk](https://pan.baidu.com/s/1PM0maLNCJxBsR9RIv18cTA)(4rgv). Then place the `Mixamo` directory within `retargeting/datasets`.
-
-Otherwise, if you want to download Mixamo dataset or use your own dataset, please follow the instructions below. Unless specifically mentioned, all script should be run in `retargeting` directory.
-
-+ To download Mixamo on your own, you can refer to [this](https://github.com/ChrisWu1997/2D-Motion-Retargeting/blob/master/dataset/Guide%20For%20Downloading%20Mixamo%20Data.md) good tutorial. You will need to download as fbx file (skin is not required) and make a subdirectory for each character in `retargeting/datasets/Mixamo`. In our original implementation we download 60fps fbx files and downsample them into 30fps. Since we use an unpaired way in training, it is recommended to divide all motions into two equal size sets for each group and equal size sets for each character in each group. If you use your own data, you need to make sure that your dataset consists of bvh files with same t-pose. You should also put your dataset in subdirectories of `retargeting/datasets/Mixamo`.
-
-+ Enter `retargeting/datasets` directory and run `blender -b -P fbx2bvh.py` to convert fbx files to bvh files. If you already have bvh file as dataset, please skil this step.
-
-+ In our original implementation, we manually split three joints for skeletons in `group A`. If you want to follow our routine, run `python datasets/split_joint.py`. This step is optional.
-
-+ Run `python datasets/preprocess.py` to simplify the skeleton by removing some less interesting joints, e.g. fingers and convert bvh files into npy files. If you use your own data, you'll need to define simplified structure in `retargeting/datasets/bvh_parser.py`. This information currently is hard-coded in the code. See the comment in source file for more details. There are four steps to make your own dataset work.
-
-+ Training and testing character are hard-coded in `retargeting/datasets/__init__.py`. You'll need to modify it if you want to use your own dataset.
-
-#### Train
-After preparing dataset, simply run 
-```bash
-cd retargeting
-python train.py --save_dir=./training/
-```
-
-It will use default hyper-parameters to train the model and save trained model in `retargeting/training` directory. More options are available in `retargeting/option_parser.py`. You can use tensorboard to monitor the training progress by running
-
-```bash
-tensorboard --logdir=./retargeting/training/logs/
-```
-
-### Motion Style Transfer
-
-#### Dataset
+### Dataset
 
 + Download the dataset from [Google Drive](https://drive.google.com/drive/folders/1C-_iZJj-PSUWZwh25yAsQe1tLpPm9EZ5?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/1LtZaX7bQ6kz8TrDWd4FxWA) (zzck). The dataset consists of two parts: one is the taken from the motion style transfer dataset proposed by [Xia et al.](http://faculty.cs.tamu.edu/jchai/projects/SIG15/style-final.pdf) and the other is our BFA dataset, where both parts contain .bvh files retargeted to the standard skeleton of [CMU mocap dataset](http://mocap.cs.cmu.edu/).
 + Extract the .zip files into `style_transfer/data`
@@ -149,14 +50,14 @@ tensorboard --logdir=./retargeting/training/logs/
 
   This will produce `xia.npz`, `bfa.npz` in `style_transfer/data`.
 
-#### Train
+### Train
 
 After downloading the dataset simply run
 ```bash
 python style_transfer/train.py
 ```
 
-#### Style from videos
+### Style from videos
 
 To run our models in test time with your own videos, you first need to use [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) to extract the 2D joint positions from the video, then use the resulting JSON files as described in the demo examples.
 

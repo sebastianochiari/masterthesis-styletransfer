@@ -113,3 +113,6 @@ retargeting/datasets/Mixamo/*
 retargeting/datasets/test_set.tar.bz2
 retargeting/pretrained/results/*
 retargeting/examples
+
+# dataset and results for motion style transfer
+style_transfer/data/*
